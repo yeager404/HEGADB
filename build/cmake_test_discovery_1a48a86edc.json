@@ -1,0 +1,160 @@
+{
+  "tests": 26,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "CryptoTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "KeyGeneration",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_crypto.cpp",
+          "line": 21
+        },
+        {
+          "name": "EncryptDecrypt",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_crypto.cpp",
+          "line": 29
+        },
+        {
+          "name": "PackedVectorEncryption",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_crypto.cpp",
+          "line": 45
+        },
+        {
+          "name": "HomomorphicAdd",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_crypto.cpp",
+          "line": 63
+        },
+        {
+          "name": "HomomorphicMult",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_crypto.cpp",
+          "line": 80
+        },
+        {
+          "name": "SerializeDeserialize",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_crypto.cpp",
+          "line": 97
+        },
+        {
+          "name": "KeyPersistence",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_crypto.cpp",
+          "line": 116
+        }
+      ]
+    },
+    {
+      "name": "ExprTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "Equality",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_expressions.cpp",
+          "line": 60
+        },
+        {
+          "name": "GreaterThan",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_expressions.cpp",
+          "line": 88
+        },
+        {
+          "name": "LessThan",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_expressions.cpp",
+          "line": 114
+        },
+        {
+          "name": "AndExpression",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_expressions.cpp",
+          "line": 140
+        },
+        {
+          "name": "OrExpression",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_expressions.cpp",
+          "line": 169
+        },
+        {
+          "name": "NotExpression",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_expressions.cpp",
+          "line": 196
+        }
+      ]
+    },
+    {
+      "name": "StorageTest",
+      "tests": 11,
+      "testsuite": [
+        {
+          "name": "ChunkPersistence",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 53
+        },
+        {
+          "name": "ChunkListing",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 85
+        },
+        {
+          "name": "CSVIngestion",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 114
+        },
+        {
+          "name": "TableScanExec",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 134
+        },
+        {
+          "name": "SlotAlignment",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 160
+        },
+        {
+          "name": "FilterExec",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 193
+        },
+        {
+          "name": "ProjectExec",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 229
+        },
+        {
+          "name": "ResultMaskCorrectness",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 253
+        },
+        {
+          "name": "ClientRowReconstruction",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 287
+        },
+        {
+          "name": "MultiChunkExecution",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 326
+        },
+        {
+          "name": "PlaintextVsEncryptedEquivalence",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 400
+        }
+      ]
+    },
+    {
+      "name": "PlanValidatorTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "InvalidColumnRejected",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 374
+        },
+        {
+          "name": "InvalidTableRejected",
+          "file": "\/home\/yeager404\/Workspace\/OpenFHE\/Prototype 1\/tests\/test_execution.cpp",
+          "line": 387
+        }
+      ]
+    }
+  ]
+}

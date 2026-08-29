@@ -1,0 +1,2 @@
+/usr/bin/ar qc libproto1.a CMakeFiles/proto1.dir/src/crypto/bfv_context.cpp.o CMakeFiles/proto1.dir/src/storage/filesystem_storage.cpp.o CMakeFiles/proto1.dir/src/execution/encrypted_batch.cpp.o CMakeFiles/proto1.dir/src/execution/operators.cpp.o CMakeFiles/proto1.dir/src/expression/expression_executor.cpp.o CMakeFiles/proto1.dir/src/result/result_stream.cpp.o CMakeFiles/proto1.dir/src/client/client.cpp.o CMakeFiles/proto1.dir/src/catalog/ingestion.cpp.o CMakeFiles/proto1.dir/src/planner/plan_validator.cpp.o
+/usr/bin/ranlib libproto1.a

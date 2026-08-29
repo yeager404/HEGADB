@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/yeager404/Workspace/OpenFHE/Prototype 1/build/cmake_install.cmake",
+		"/home/yeager404/Workspace/OpenFHE/Prototype 1/build/gtest/cmake_install.cmake",
+		"/home/yeager404/Workspace/OpenFHE/Prototype 1/build/gtest/googlemock/cmake_install.cmake",
+		"/home/yeager404/Workspace/OpenFHE/Prototype 1/build/gtest/googletest/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
