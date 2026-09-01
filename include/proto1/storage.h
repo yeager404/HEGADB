@@ -29,6 +29,15 @@ public:
                      const std::string& columnId,
                      uint32_t partitionId,
                      uint32_t chunkId) const = 0;
+
+    // Apply a decrypted bitmask to filter encrypted rows.
+    // Returns only the columns for rows where bitmask[i] == 1.
+    virtual EncryptedBatch
+    applyBitmaskFilter(const std::string& tableId,
+                       const std::vector<std::string>& columnIds,
+                       uint32_t partitionId,
+                       uint32_t chunkId,
+                       const std::vector<int64_t>& bitmask) const = 0;
 };
 
 // Filesystem implementation.

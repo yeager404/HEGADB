@@ -1,8 +1,15 @@
-// Prototype 1 — End-to-End Demo
+// Prototype 1 — End-to-End Demo with Bitmask-Based Filtering
 //
 // Query: SELECT id, age, salary FROM employees WHERE id=5 AND age>3
 //
-// Note: BFV with p=17 requires values in [0,8] for correct GT/LT semantics.
+// Flow:
+// 1. Server executes WHERE clause homomorphically → encrypted bitmask
+// 2. Client decrypts bitmask only (lightweight)
+// 3. Client sends decrypted bitmask back to server
+// 4. Server uses bitmask to filter and return only matching encrypted rows
+// 5. Client decrypts and reconstructs rows
+//
+// Note: BFV with p=257 requires values in [0,128] for correct GT/LT semantics.
 // The demo dataset uses values in [1,8].
 
 #include "proto1/fhe_runtime.h"
@@ -55,17 +62,17 @@ static void printRow(const Row& row) {
 int main() {
     std::cout << "\n";
     std::cout << "╔══════════════════════════════════════════════════════╗\n";
-    std::cout << "║  Prototype 1 — FHE Database Execution Engine Demo   ║\n";
+    std::cout << "║  Prototype 1 — Bitmask-Based FHE Query Execution   ║\n";
     std::cout << "╚══════════════════════════════════════════════════════╝\n\n";
 
     auto t0 = std::chrono::high_resolution_clock::now();
 
     // ── Step 1: FHE Setup ──────────────────────────────────────────────────
-    std::cout << "Step 1: FHE Setup (BFV, p=257, depth=8, N=128)\n";
+    std::cout << "Step 1: FHE Setup (BFV, p=257, depth=9, N=128)\n";
     FHEParameterSet params;
-    params.id                  = "bfv-257-depth8";
+    params.id                  = "bfv-257-depth9";
     params.plaintextModulus    = 257;
-    params.multiplicativeDepth = 8;
+    params.multiplicativeDepth = 9;
     params.ringDimension       = 128;
 
     auto t1 = std::chrono::high_resolution_clock::now();
@@ -121,9 +128,8 @@ int main() {
 
     // ── Step 4: Build physical query plan ─────────────────────────────────
     std::cout << "Step 4: Build physical query plan\n";
-    std::cout << "  ProjectExec([id, age, salary])\n";
-    std::cout << "    └─ FilterExec(AND(EQ(id,5), GT(age,3)))\n";
-    std::cout << "         └─ TableScanExec(employees)\n\n";
+    std::cout << "  BitmaskFilterExec(AND(EQ(id,5), GT(age,3)))\n";
+    std::cout << "    └─ TableScanExec(employees)\n\n";
 
     QueryClient client(clientCtx);
     auto lit5 = client.encryptLiteral(5);
@@ -140,36 +146,82 @@ int main() {
     validator.validateProjection({"id", "age", "salary"}, "employees");
     std::cout << "  Plan validation: OK\n\n";
 
-    // ── Step 5: Execute ────────────────────────────────────────────────────
-    std::cout << "Step 5: Execute encrypted query\n";
+    // ── Step 5: Execute (bitmask-only) ─────────────────────────────────────
+    std::cout << "Step 5: Execute encrypted query (bitmask-only)\n";
 
     auto scan    = std::make_shared<TableScanExec>(
         "employees", std::vector<std::string>{"id", "age", "salary"}, storage);
-    auto filter  = std::make_shared<FilterExec>(scan, predicate, clientCtx);
-    auto project = std::make_shared<ProjectExec>(
-        filter, std::vector<std::string>{"id", "age", "salary"});
+    auto bitmaskFilter = std::make_shared<BitmaskFilterExec>(scan, predicate, clientCtx);
 
     auto t5 = std::chrono::high_resolution_clock::now();
-    EncryptedResultStream stream(project);
-    auto resultBatches = stream.collectAll();
+    EncryptedResultStream stream(bitmaskFilter);
+    auto bitmaskBatches = stream.collectAll();
     auto t6 = std::chrono::high_resolution_clock::now();
     auto execMs = std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count();
-    std::cout << "  Query execution: " << execMs << " ms\n\n";
+    std::cout << "  Query execution (bitmask): " << execMs << " ms\n\n";
 
-    // ── Step 6: Decrypt and reconstruct ───────────────────────────────────
-    std::cout << "Step 6: Client decrypts and reconstructs rows\n";
+    // ── Step 6: Client decrypts bitmask ────────────────────────────────────
+    std::cout << "Step 6: Client decrypts bitmask\n";
+    std::vector<std::vector<int64_t>> decryptedBitmasks;
+    for (auto& batch : bitmaskBatches) {
+        auto bitmask = client.decryptBitmask(batch);
+        decryptedBitmasks.push_back(bitmask);
+        std::cout << "  Chunk " << batch.chunkId << ": ";
+        int64_t matchCount = 0;
+        for (auto b : bitmask) if (b == 1) ++matchCount;
+        std::cout << matchCount << "/" << batch.logicalRowCount << " rows match\n";
+    }
+    std::cout << "\n";
+
+    // ── Step 7: Server applies bitmask and returns encrypted rows ──────────
+    std::cout << "Step 7: Server applies bitmask and returns encrypted rows\n";
+    std::vector<EncryptedBatch> filteredBatches;
+    for (size_t i = 0; i < bitmaskBatches.size(); ++i) {
+        auto& batch = bitmaskBatches[i];
+        auto& bitmask = decryptedBitmasks[i];
+        auto filtered = storage->applyBitmaskFilter(
+            "employees",
+            std::vector<std::string>{"id", "age", "salary"},
+            0,  // partitionId
+            batch.chunkId,
+            bitmask);
+        filteredBatches.push_back(filtered);
+    }
+    std::cout << "  Returned " << filteredBatches.size() << " filtered batch(es)\n\n";
+
+    // ── Step 8: Client decrypts and reconstructs rows ──────────────────────
+    std::cout << "Step 8: Client decrypts and reconstructs rows\n";
     std::vector<Row> encResult;
-    for (auto& batch : resultBatches) {
-        auto rows = client.decryptAndReconstruct(batch);
-        encResult.insert(encResult.end(), rows.begin(), rows.end());
+    for (size_t i = 0; i < filteredBatches.size(); ++i) {
+        auto& batch = filteredBatches[i];
+        auto& bitmask = decryptedBitmasks[i];
+        
+        // Decrypt each column
+        std::unordered_map<std::string, std::vector<int64_t>> decryptedCols;
+        for (auto& [colName, chunk] : batch.columns) {
+            if (chunk.ciphertexts.empty())
+                throw std::runtime_error("Column has no ciphertexts: " + colName);
+            auto pv = clientCtx->decrypt(*chunk.ciphertexts[0], batch.logicalRowCount);
+            decryptedCols[colName] = pv.values;
+        }
+        
+        // Reconstruct rows where bitmask[i] == 1
+        for (size_t j = 0; j < bitmask.size(); ++j) {
+            if (bitmask[j] == 1) {
+                Row row;
+                for (auto& [colName, vals] : decryptedCols)
+                    row.values[colName] = vals[j];
+                encResult.push_back(std::move(row));
+            }
+        }
     }
 
     std::cout << "  Encrypted query result (" << encResult.size() << " rows):\n";
     for (auto& row : encResult) printRow(row);
     std::cout << "\n";
 
-    // ── Step 7: Verify ─────────────────────────────────────────────────────
-    std::cout << "Step 7: Verify encrypted result matches plaintext reference\n";
+    // ── Step 9: Verify ─────────────────────────────────────────────────────
+    std::cout << "Step 9: Verify encrypted result matches plaintext reference\n";
     bool match = (encResult.size() == plainRef.size());
     if (match) {
         for (size_t i = 0; i < encResult.size() && match; ++i) {

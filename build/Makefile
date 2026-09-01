@@ -211,6 +211,45 @@ proto1_tests/fast:
 .PHONY : proto1_tests/fast
 
 #=============================================================================
+# Target rules for targets named test_bitmask_decrypt
+
+# Build rule for target.
+test_bitmask_decrypt: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_bitmask_decrypt
+.PHONY : test_bitmask_decrypt
+
+# fast build rule for target.
+test_bitmask_decrypt/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_decrypt.dir/build.make CMakeFiles/test_bitmask_decrypt.dir/build
+.PHONY : test_bitmask_decrypt/fast
+
+#=============================================================================
+# Target rules for targets named test_row_filtering
+
+# Build rule for target.
+test_row_filtering: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_row_filtering
+.PHONY : test_row_filtering
+
+# fast build rule for target.
+test_row_filtering/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_row_filtering.dir/build.make CMakeFiles/test_row_filtering.dir/build
+.PHONY : test_row_filtering/fast
+
+#=============================================================================
+# Target rules for targets named test_bitmask_filter_exec
+
+# Build rule for target.
+test_bitmask_filter_exec: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_bitmask_filter_exec
+.PHONY : test_bitmask_filter_exec
+
+# fast build rule for target.
+test_bitmask_filter_exec/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_filter_exec.dir/build.make CMakeFiles/test_bitmask_filter_exec.dir/build
+.PHONY : test_bitmask_filter_exec/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -285,6 +324,78 @@ examples/demo.s: examples/demo.cpp.s
 examples/demo.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/prototype1_demo.dir/build.make CMakeFiles/prototype1_demo.dir/examples/demo.cpp.s
 .PHONY : examples/demo.cpp.s
+
+examples/test_bitmask_decrypt.o: examples/test_bitmask_decrypt.cpp.o
+.PHONY : examples/test_bitmask_decrypt.o
+
+# target to build an object file
+examples/test_bitmask_decrypt.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_decrypt.dir/build.make CMakeFiles/test_bitmask_decrypt.dir/examples/test_bitmask_decrypt.cpp.o
+.PHONY : examples/test_bitmask_decrypt.cpp.o
+
+examples/test_bitmask_decrypt.i: examples/test_bitmask_decrypt.cpp.i
+.PHONY : examples/test_bitmask_decrypt.i
+
+# target to preprocess a source file
+examples/test_bitmask_decrypt.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_decrypt.dir/build.make CMakeFiles/test_bitmask_decrypt.dir/examples/test_bitmask_decrypt.cpp.i
+.PHONY : examples/test_bitmask_decrypt.cpp.i
+
+examples/test_bitmask_decrypt.s: examples/test_bitmask_decrypt.cpp.s
+.PHONY : examples/test_bitmask_decrypt.s
+
+# target to generate assembly for a file
+examples/test_bitmask_decrypt.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_decrypt.dir/build.make CMakeFiles/test_bitmask_decrypt.dir/examples/test_bitmask_decrypt.cpp.s
+.PHONY : examples/test_bitmask_decrypt.cpp.s
+
+examples/test_bitmask_filter_exec.o: examples/test_bitmask_filter_exec.cpp.o
+.PHONY : examples/test_bitmask_filter_exec.o
+
+# target to build an object file
+examples/test_bitmask_filter_exec.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_filter_exec.dir/build.make CMakeFiles/test_bitmask_filter_exec.dir/examples/test_bitmask_filter_exec.cpp.o
+.PHONY : examples/test_bitmask_filter_exec.cpp.o
+
+examples/test_bitmask_filter_exec.i: examples/test_bitmask_filter_exec.cpp.i
+.PHONY : examples/test_bitmask_filter_exec.i
+
+# target to preprocess a source file
+examples/test_bitmask_filter_exec.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_filter_exec.dir/build.make CMakeFiles/test_bitmask_filter_exec.dir/examples/test_bitmask_filter_exec.cpp.i
+.PHONY : examples/test_bitmask_filter_exec.cpp.i
+
+examples/test_bitmask_filter_exec.s: examples/test_bitmask_filter_exec.cpp.s
+.PHONY : examples/test_bitmask_filter_exec.s
+
+# target to generate assembly for a file
+examples/test_bitmask_filter_exec.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bitmask_filter_exec.dir/build.make CMakeFiles/test_bitmask_filter_exec.dir/examples/test_bitmask_filter_exec.cpp.s
+.PHONY : examples/test_bitmask_filter_exec.cpp.s
+
+examples/test_row_filtering.o: examples/test_row_filtering.cpp.o
+.PHONY : examples/test_row_filtering.o
+
+# target to build an object file
+examples/test_row_filtering.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_row_filtering.dir/build.make CMakeFiles/test_row_filtering.dir/examples/test_row_filtering.cpp.o
+.PHONY : examples/test_row_filtering.cpp.o
+
+examples/test_row_filtering.i: examples/test_row_filtering.cpp.i
+.PHONY : examples/test_row_filtering.i
+
+# target to preprocess a source file
+examples/test_row_filtering.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_row_filtering.dir/build.make CMakeFiles/test_row_filtering.dir/examples/test_row_filtering.cpp.i
+.PHONY : examples/test_row_filtering.cpp.i
+
+examples/test_row_filtering.s: examples/test_row_filtering.cpp.s
+.PHONY : examples/test_row_filtering.s
+
+# target to generate assembly for a file
+examples/test_row_filtering.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_row_filtering.dir/build.make CMakeFiles/test_row_filtering.dir/examples/test_row_filtering.cpp.s
+.PHONY : examples/test_row_filtering.cpp.s
 
 src/catalog/ingestion.o: src/catalog/ingestion.cpp.o
 .PHONY : src/catalog/ingestion.o
@@ -594,9 +705,21 @@ help:
 	@echo "... proto1"
 	@echo "... proto1_tests"
 	@echo "... prototype1_demo"
+	@echo "... test_bitmask_decrypt"
+	@echo "... test_bitmask_filter_exec"
+	@echo "... test_row_filtering"
 	@echo "... examples/demo.o"
 	@echo "... examples/demo.i"
 	@echo "... examples/demo.s"
+	@echo "... examples/test_bitmask_decrypt.o"
+	@echo "... examples/test_bitmask_decrypt.i"
+	@echo "... examples/test_bitmask_decrypt.s"
+	@echo "... examples/test_bitmask_filter_exec.o"
+	@echo "... examples/test_bitmask_filter_exec.i"
+	@echo "... examples/test_bitmask_filter_exec.s"
+	@echo "... examples/test_row_filtering.o"
+	@echo "... examples/test_row_filtering.i"
+	@echo "... examples/test_row_filtering.s"
 	@echo "... src/catalog/ingestion.o"
 	@echo "... src/catalog/ingestion.i"
 	@echo "... src/catalog/ingestion.s"

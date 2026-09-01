@@ -225,6 +225,46 @@ public:
         return metaFromJson(js);
     }
 
+    EncryptedBatch
+    applyBitmaskFilter(const std::string& tableId,
+                       const std::vector<std::string>& columnIds,
+                       uint32_t partitionId,
+                       uint32_t chunkId,
+                       const std::vector<int64_t>& bitmask) const override {
+        if (columnIds.empty())
+            throw std::runtime_error("applyBitmaskFilter: no columns specified");
+
+        EncryptedBatch result;
+        result.chunkId = chunkId;
+
+        // Load all requested columns
+        std::unordered_map<std::string, EncryptedColumnChunk> allCols;
+        for (auto& colId : columnIds) {
+            allCols[colId] = getChunk(tableId, colId, partitionId, chunkId);
+        }
+
+        // Get row count from first column
+        auto& firstChunk = allCols.begin()->second;
+        int64_t totalRows = firstChunk.meta.logicalRowCount;
+
+        if (bitmask.size() != static_cast<size_t>(totalRows))
+            throw std::runtime_error("Bitmask size mismatch");
+
+        // Keep logicalRowCount as original (client will filter using bitmask)
+        result.logicalRowCount = totalRows;
+
+        // Return all columns unchanged
+        for (auto& [colId, chunk] : allCols) {
+            result.columns[colId] = std::move(chunk);
+        }
+
+        LOG_DEBUG("Storage", "applyBitmaskFilter: " + tableId +
+                  " chunk=" + std::to_string(chunkId) +
+                  " rows=" + std::to_string(totalRows));
+
+        return result;
+    }
+
 private:
     std::string                    root_;
     std::shared_ptr<FHEKeyContext> ctx_;

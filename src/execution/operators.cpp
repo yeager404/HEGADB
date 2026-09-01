@@ -107,4 +107,34 @@ std::optional<EncryptedBatch> ProjectExec::next() {
 
 void ProjectExec::reset() { child_->reset(); }
 
+// ── BitmaskFilterExec ──────────────────────────────────────────────────────
+
+BitmaskFilterExec::BitmaskFilterExec(std::shared_ptr<PhysicalOperator> child,
+                                      std::shared_ptr<Expression>       predicate,
+                                      std::shared_ptr<FHEKeyContext>    ctx)
+    : child_(std::move(child))
+    , predicate_(std::move(predicate))
+    , executor_(ctx) {}
+
+std::optional<EncryptedBatch> BitmaskFilterExec::next() {
+    auto batch = child_->next();
+    if (!batch) return std::nullopt;
+
+    LOG_DEBUG("BitmaskFilterExec", "evaluating predicate on chunk=" +
+              std::to_string(batch->chunkId));
+
+    auto mask = executor_.evaluate(*predicate_, *batch);
+
+    // Return ONLY the bitmask, no columns
+    EncryptedBatch result;
+    result.chunkId         = batch->chunkId;
+    result.logicalRowCount = batch->logicalRowCount;
+    result.selectionMask   = std::move(mask);
+    // columns map is empty
+
+    return result;
+}
+
+void BitmaskFilterExec::reset() { child_->reset(); }
+
 } // namespace proto1

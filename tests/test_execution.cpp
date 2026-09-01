@@ -18,9 +18,9 @@ namespace fs = std::filesystem;
 
 static FHEParameterSet testParams() {
     FHEParameterSet p;
-    p.id                  = "bfv-257-depth8";
+    p.id                  = "bfv-257-depth9";
     p.plaintextModulus    = 257;
-    p.multiplicativeDepth = 8;
+    p.multiplicativeDepth = 9;
     p.ringDimension       = 128;
     return p;
 }

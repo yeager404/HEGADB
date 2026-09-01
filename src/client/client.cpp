@@ -17,6 +17,16 @@ QueryClient::encryptLiteral(int64_t value) const {
 }
 
 std::vector<int64_t>
+QueryClient::decryptBitmask(const EncryptedBatch& batch) const {
+    if (!batch.selectionMask) {
+        // No filter applied → all rows selected
+        return std::vector<int64_t>(batch.logicalRowCount, 1);
+    }
+    auto pv = keyCtx_->decrypt(*batch.selectionMask, batch.logicalRowCount);
+    return pv.values;
+}
+
+std::vector<int64_t>
 QueryClient::decryptVector(const EncryptedVector& v, size_t logicalLen) const {
     auto pv = keyCtx_->decrypt(v, logicalLen);
     return pv.values;

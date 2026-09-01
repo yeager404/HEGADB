@@ -1,6 +1,9 @@
 /home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/proto1.dir
 /home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/prototype1_demo.dir
 /home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/proto1_tests.dir
+/home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/test_bitmask_decrypt.dir
+/home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/test_row_filtering.dir
+/home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/test_bitmask_filter_exec.dir
 /home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/test.dir
 /home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/edit_cache.dir
 /home/yeager404/Workspace/OpenFHE/Prototype 1/build/CMakeFiles/rebuild_cache.dir

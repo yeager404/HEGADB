@@ -81,4 +81,22 @@ private:
     std::vector<std::string>          outputColumns_;
 };
 
+// ── BitmaskFilterExec ──────────────────────────────────────────────────────
+// Evaluates a predicate and returns ONLY the encrypted bitmask (no columns).
+// Used for client-side decryption of bitmask, then server-side filtering.
+class BitmaskFilterExec : public PhysicalOperator {
+public:
+    BitmaskFilterExec(std::shared_ptr<PhysicalOperator> child,
+                      std::shared_ptr<Expression>       predicate,
+                      std::shared_ptr<FHEKeyContext>    ctx);
+
+    std::optional<EncryptedBatch> next() override;
+    void reset() override;
+
+private:
+    std::shared_ptr<PhysicalOperator> child_;
+    std::shared_ptr<Expression>       predicate_;
+    ExpressionExecutor                executor_;
+};
+
 } // namespace proto1

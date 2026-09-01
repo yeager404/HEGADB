@@ -95,3 +95,19 @@ if(GTEST_AVAILABLE)
     set_target_properties(proto1_tests
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif()
+
+# ── Bitmask test executables ───────────────────────────────────────────────
+add_executable(test_bitmask_decrypt examples/test_bitmask_decrypt.cpp)
+target_link_libraries(test_bitmask_decrypt PRIVATE proto1)
+set_target_properties(test_bitmask_decrypt
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+add_executable(test_row_filtering examples/test_row_filtering.cpp)
+target_link_libraries(test_row_filtering PRIVATE proto1)
+set_target_properties(test_row_filtering
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+add_executable(test_bitmask_filter_exec examples/test_bitmask_filter_exec.cpp)
+target_link_libraries(test_bitmask_filter_exec PRIVATE proto1)
+set_target_properties(test_bitmask_filter_exec
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

@@ -27,6 +27,10 @@ public:
     // Decrypt a result batch and reconstruct rows where mask == 1.
     std::vector<Row> decryptAndReconstruct(const EncryptedBatch& batch) const;
 
+    // Decrypt only the selection mask (bitmask) from a batch.
+    // Returns a vector of 0s and 1s, one per logical row.
+    std::vector<int64_t> decryptBitmask(const EncryptedBatch& batch) const;
+
     // Decrypt a single EncryptedVector (for testing).
     std::vector<int64_t> decryptVector(const EncryptedVector& v,
                                        size_t logicalLen) const;
