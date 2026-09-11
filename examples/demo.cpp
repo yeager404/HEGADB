@@ -136,8 +136,8 @@ int main() {
     auto lit3 = client.encryptLiteral(3);
 
     auto predicate = Expression::andExpr(
-        Expression::equal(Expression::columnRef("id"),  Expression::encLiteral(lit5)),
-        Expression::gt(Expression::columnRef("age"),    Expression::encLiteral(lit3)));
+        Expression::equal(Expression::columnRef("id"),  Expression::encLiteral(lit5, 5)),
+        Expression::gt(Expression::columnRef("age"),    Expression::encLiteral(lit3, 3)));
 
     Catalog catalog;
     catalog.registerTable(schema);

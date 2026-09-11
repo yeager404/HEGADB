@@ -72,6 +72,7 @@ std::optional<EncryptedBatch> FilterExec::next() {
 
     auto mask = executor_.evaluate(*predicate_, *batch);
     batch->selectionMask = std::move(mask);
+    batch->predicateSQL  = predicate_->toSQL();
     return batch;
 }
 
@@ -92,6 +93,7 @@ std::optional<EncryptedBatch> ProjectExec::next() {
     projected.chunkId         = batch->chunkId;
     projected.logicalRowCount = batch->logicalRowCount;
     projected.selectionMask   = batch->selectionMask;
+    projected.predicateSQL    = batch->predicateSQL;
 
     for (auto& col : outputColumns_) {
         auto it = batch->columns.find(col);

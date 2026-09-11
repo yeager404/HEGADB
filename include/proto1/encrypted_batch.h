@@ -50,6 +50,9 @@ struct EncryptedBatch {
     // nullptr means "all rows selected".
     std::shared_ptr<EncryptedVector> selectionMask;
 
+    // Human-readable predicate string set by FilterExec for display purposes.
+    std::string predicateSQL;
+
     // Validate that all columns are aligned.
     void validate() const;
 };

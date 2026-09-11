@@ -1,6 +1,8 @@
 // QueryClient implementation.
 
 #include "proto1/client.h"
+#include <algorithm>
+#include <iostream>
 #include <stdexcept>
 
 namespace proto1 {
@@ -65,6 +67,33 @@ QueryClient::decryptAndReconstruct(const EncryptedBatch& batch) const {
             rows.push_back(std::move(row));
         }
     }
+
+    // Print query and result to terminal.
+    if (!batch.predicateSQL.empty()) {
+        // Collect sorted column names for stable output.
+        std::vector<std::string> cols;
+        for (auto& [c, _] : decryptedCols) cols.push_back(c);
+        std::sort(cols.begin(), cols.end());
+
+        std::cout << "\n[Query]  WHERE " << batch.predicateSQL << "\n";
+        std::cout << "[Result] " << rows.size() << " row(s)\n";
+
+        // Header
+        std::cout << "  ";
+        for (auto& c : cols) std::cout << c << "\t";
+        std::cout << "\n  ";
+        for (auto& c : cols) std::cout << std::string(c.size(), '-') << "\t";
+        std::cout << "\n";
+
+        // Rows
+        for (auto& row : rows) {
+            std::cout << "  ";
+            for (auto& c : cols) std::cout << row.values.at(c) << "\t";
+            std::cout << "\n";
+        }
+        std::cout << "\n";
+    }
+
     return rows;
 }
 

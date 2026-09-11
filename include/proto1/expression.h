@@ -3,6 +3,7 @@
 // Nodes are evaluated by ExpressionExecutor.
 
 #include "proto1/fhe_runtime.h"
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
@@ -28,6 +29,7 @@ struct Expression {
 
     // EncryptedLiteral — pre-encrypted by the client
     std::shared_ptr<EncryptedVector> literal;
+    int64_t literalValue{INT64_MIN}; // plaintext value, kept for display only
 
     // Binary / unary children
     std::shared_ptr<Expression> left;
@@ -41,10 +43,11 @@ struct Expression {
     }
 
     static std::shared_ptr<Expression>
-    encLiteral(std::shared_ptr<EncryptedVector> v) {
+    encLiteral(std::shared_ptr<EncryptedVector> v, int64_t value = INT64_MIN) {
         auto e = std::make_shared<Expression>();
         e->kind = ExprKind::EncryptedLiteral;
         e->literal = std::move(v);
+        e->literalValue = value;
         return e;
     }
 
@@ -94,6 +97,21 @@ struct Expression {
         e->kind = ExprKind::Not;
         e->left = std::move(child);
         return e;
+    }
+
+    std::string toSQL() const {
+        switch (kind) {
+            case ExprKind::ColumnRef:        return columnName;
+            case ExprKind::EncryptedLiteral:
+                return literalValue != INT64_MIN ? std::to_string(literalValue) : "?";
+            case ExprKind::Equal:       return left->toSQL() + " = "  + right->toSQL();
+            case ExprKind::GreaterThan: return left->toSQL() + " > "  + right->toSQL();
+            case ExprKind::LessThan:    return left->toSQL() + " < "  + right->toSQL();
+            case ExprKind::And: return "(" + left->toSQL() + " AND " + right->toSQL() + ")";
+            case ExprKind::Or:  return "(" + left->toSQL() + " OR "  + right->toSQL() + ")";
+            case ExprKind::Not: return "NOT(" + left->toSQL() + ")";
+        }
+        return "?";
     }
 };
 
