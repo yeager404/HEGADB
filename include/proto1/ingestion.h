@@ -10,6 +10,10 @@
 
 namespace proto1 {
 
+inline std::string stringPhysicalColumn(const std::string& name, size_t position) {
+    return name + "#" + std::to_string(position);
+}
+
 // A plaintext columnar batch (pre-encryption).
 struct PlaintextBatch {
     std::string tableId;

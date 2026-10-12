@@ -65,7 +65,23 @@ readCSV(const std::string& path,
             // Only store columns that are in the schema
             for (auto& col : schema.columns) {
                 if (col.name == headers[i]) {
-                    current.columns[col.name].push_back(std::stoll(fields[i]));
+                    if (col.type == DataType::STRING) {
+                        if (col.maxLength == 0 || fields[i].size() > col.maxLength)
+                            throw std::runtime_error("String value for column '" +
+                                                     col.name + "' exceeds maxLength");
+                        for (size_t pos = 0; pos < col.maxLength; ++pos) {
+                            int64_t value = pos < fields[i].size()
+                                ? static_cast<unsigned char>(fields[i][pos])
+                                : 0;
+                            if (value > 127)
+                                throw std::runtime_error("Non-ASCII string in column '" +
+                                                         col.name + "'");
+                            current.columns[stringPhysicalColumn(col.name, pos)]
+                                .push_back(value);
+                        }
+                    } else {
+                        current.columns[col.name].push_back(std::stoll(fields[i]));
+                    }
                     break;
                 }
             }
@@ -98,10 +114,16 @@ void encryptAndStore(const PlaintextBatch& batch,
     size_t rowCount  = batch.rowCount();
 
     for (auto& col : schema.columns) {
-        auto it = batch.columns.find(col.name);
-        if (it == batch.columns.end()) continue;
+        const size_t width = col.type == DataType::STRING ? col.maxLength : 1;
+        for (size_t position = 0; position < width; ++position) {
+            const std::string physicalName =
+                col.type == DataType::STRING
+                    ? stringPhysicalColumn(col.name, position)
+                    : col.name;
+            auto it = batch.columns.find(physicalName);
+            if (it == batch.columns.end()) continue;
 
-        auto& vals = it->second;
+            auto& vals = it->second;
 
         // Pad to slot count with zeros (padding doesn't affect correctness
         // because the selection mask will be 0 for padding slots).
@@ -113,7 +135,7 @@ void encryptAndStore(const PlaintextBatch& batch,
 
         EncryptedColumnChunk chunk;
         chunk.meta.tableId         = batch.tableId;
-        chunk.meta.columnId        = col.name;
+        chunk.meta.columnId        = physicalName;
         chunk.meta.partitionId     = 0;
         chunk.meta.chunkId         = batch.chunkId;
         chunk.meta.logicalRowStart = batch.logicalRowStart;
@@ -124,7 +146,8 @@ void encryptAndStore(const PlaintextBatch& batch,
         chunk.meta.ciphertextCount = 1;
         chunk.ciphertexts.push_back(ct);
 
-        storage.putChunk(chunk);
+            storage.putChunk(chunk);
+        }
     }
 }
 
